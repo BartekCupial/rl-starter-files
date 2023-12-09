@@ -61,6 +61,11 @@ parser.add_argument("--recurrence", type=int, default=1,
                     help="number of time-steps gradient is backpropagated (default: 1). If > 1, a LSTM is added to the model to have memory.")
 parser.add_argument("--text", action="store_true", default=False,
                     help="add a GRU to the model to handle text input")
+parser.add_argument("--lru", action="store_true", default=False,
+                    help="use LRU model instead of LSTM")
+parser.add_argument("--lru-layers", type=int, default=1,
+                    help="number of lru layers (default: 1). Only active when lru=True")
+
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -118,7 +123,7 @@ if __name__ == "__main__":
 
     # Load model
 
-    acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
+    acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.lru, args.lru_layers, args.text)
     if "model_state" in status:
         acmodel.load_state_dict(status["model_state"])
     acmodel.to(device)

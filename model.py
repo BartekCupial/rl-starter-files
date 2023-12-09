@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions.categorical import Categorical
 import torch_ac
+from utils.lru import StackedLRUModel as LRU
 
 
 # Function from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/model.py
@@ -16,12 +17,14 @@ def init_params(m):
 
 
 class ACModel(nn.Module, torch_ac.RecurrentACModel):
-    def __init__(self, obs_space, action_space, use_memory=False, use_text=False):
+    def __init__(self, obs_space, action_space, use_memory=False, use_lru=False, lru_layers=1, use_text=False):
         super().__init__()
 
         # Decide which components are enabled
         self.use_text = use_text
         self.use_memory = use_memory
+        self.use_lru = use_lru
+        self.lru_layers = lru_layers
 
         # Define image embedding
         self.image_conv = nn.Sequential(
@@ -39,7 +42,10 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
 
         # Define memory
         if self.use_memory:
-            self.memory_rnn = nn.LSTMCell(self.image_embedding_size, self.semi_memory_size)
+            if use_lru:
+                self.memory_rnn = LRU(self.image_embedding_size, self.semi_memory_size, num_layers=self.lru_layers)
+            else:
+                self.memory_rnn = nn.LSTMCell(self.image_embedding_size, self.semi_memory_size)
 
         # Define text embedding
         if self.use_text:
