@@ -42,7 +42,7 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
 
         # Define memory
         if self.use_memory:
-            if use_lru:
+            if self.use_lru:
                 self.memory_rnn = LRU(self.image_embedding_size, self.semi_memory_size, num_layers=self.lru_layers)
             else:
                 self.memory_rnn = nn.LSTMCell(self.image_embedding_size, self.semi_memory_size)
