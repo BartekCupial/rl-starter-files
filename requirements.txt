@@ -1,6 +1,6 @@
-torch-ac>=1.4.0
 minigrid>=2.2.0
 tensorboardX>=1.6
 numpy>=1.3
 gymnasium>=0.26
+torch-ac @ git+https://github.com/BartekCupial/torch-ac.git
 mrunner @ git+https://gitlab.com/awarelab/mrunner.git
