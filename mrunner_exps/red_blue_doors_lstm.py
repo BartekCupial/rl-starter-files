@@ -10,7 +10,7 @@ config = {
     "env": "MiniGrid-RedBlueDoors-6x6-v0",
     "save-interval": 10,
     "recurrence": 4,
-    "frames": 1000000,   
+    "frames": 1000000,
 }
 config = combine_config_with_defaults(config)
 

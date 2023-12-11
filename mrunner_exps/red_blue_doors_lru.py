@@ -17,7 +17,7 @@ config = combine_config_with_defaults(config)
 
 params_grid = {
     "seed": list(range(3)),
-    "lru-layers": [1, 2, 3],
+    "lru-layers": [3, 2, 1],
 }
 
 

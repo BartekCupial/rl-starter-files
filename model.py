@@ -90,10 +90,18 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
         x = x.reshape(x.shape[0], -1)
 
         if self.use_memory:
-            hidden = (memory[:, :self.semi_memory_size], memory[:, self.semi_memory_size:])
-            hidden = self.memory_rnn(x, hidden)
-            embedding = hidden[0]
-            memory = torch.cat(hidden, dim=1)
+            if self.use_lru:
+                hidden = memory.reshape(x.shape[0], self.lru_layers, self.semi_memory_size).transpose(0, 1)
+                x = x.unsqueeze(0)
+                embedding, memory = self.memory_rnn(x, hidden)
+                embedding = embedding.squeeze(0)
+                x = x.squeeze(0)
+                memory = memory.transpose(0, 1).reshape(x.shape[0], self.lru_layers * self.semi_memory_size)
+            else:
+                hidden = (memory[:, :self.semi_memory_size], memory[:, self.semi_memory_size:])
+                hidden = self.memory_rnn(x, hidden)
+                embedding = hidden[0]
+                memory = torch.cat(hidden, dim=1)
         else:
             embedding = x
 

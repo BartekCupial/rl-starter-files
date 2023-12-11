@@ -71,7 +71,7 @@ class LRU(nn.Module):
     # TODO: these operations have to be done in a batched way
     def forward(self, inputs, hidden_state):
         """Forward pass of a LRU: h_t+1 = lambda * h_t + B x_t+1, y_t = Re[C h_t + D x_t]"""
-
+        assert len(inputs.shape) == 3
         # hidden_state.shape -> [batch_size, d_hidden]
         # inputs.shape -> [seq_len, batch_size, d_model]
 
@@ -92,7 +92,6 @@ class LRU(nn.Module):
             # [batch_size, d_model]
             current_outputs = (hidden_state @ C.T).real + self.D * input_.real
             outputs[idx] = current_outputs
-
 
         return outputs, hidden_state
 
